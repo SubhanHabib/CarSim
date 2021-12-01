@@ -15,6 +15,10 @@ html, body {
     outline: none;
 }
 
+
+/*
+    HUD
+*/
 .hud {
     position: absolute;
     pointer-events: none;
@@ -116,5 +120,49 @@ html, body {
     background-color: #f21629;
     border-color: #f21629;
 }
+
+
+
+/*
+    Touch controls
+*/
+.touch-controls {
+    position: fixed;
+    bottom: 100px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.touch-controls .touch-controls__steering {
+    display: flex;
+}
+.touch-controls .touch-controls__centre {
+    display: flex;
+    /* flex-direction: column; */
+}
+.touch-controls .touch-controls__acceleration {
+    display: flex;
+    flex-direction: column;
+}
+.touch-controls .touch-controls__button {
+    font-family: 'Genos', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 50px;
+    text-align: center;
+    border: none;
+    outline: none;
+    margin: 4px;
+    padding: 0;
+    border-radius: 8px;
+    height: 50px;
+    width: 50px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
 
 /*# sourceMappingURL=main.css.map*/
