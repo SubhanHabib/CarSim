@@ -19,6 +19,14 @@ function animate() {
 }
 requestAnimationFrame( animate );
 
+
+function isMobileDevice() {
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
+if (!isMobileDevice()) document.querySelector('.touch-controls').style.display = 'none'
+
+console.log(isMobileDevice())
 /**
  * Debug
  */

@@ -9,6 +9,7 @@ import Environment from "./World/environment";
 import Physics from './Physics/physics.js';
 import KeyHandler from './Util/key-handler';
 import Resources from './Util/resources';
+import TouchKeyHandler from './Util/touch-key-handler';
 
 let ThreeJSSimulation = null;
 
@@ -23,11 +24,13 @@ export default class Simulator {
     constructor(canvas) {
         if (ThreeJSSimulation) return ThreeJSSimulation;
         ThreeJSSimulation = this;
+        console.log(this._sizes)
 
         this._canvas = canvas;
         this._scene = new THREE.Scene();
         
         this._keyHandler = new KeyHandler();
+        this._touchKeyHandler = new TouchKeyHandler();
         this._camera = new Camera();
         this._debug = new Debug();
         this._renderer = new Renderer();
@@ -39,8 +42,13 @@ export default class Simulator {
             
             this.scene.add(collection.car)
             setTimeout(() => {
+                this.scene.add(collection.track)
+                console.log(collection.track)
+                collection.track.position.set(0.0, -10.0, 0.0)
+                collection.track.scale.set(10.0, 1, 10.0)
                 this._physics.createCar()
-            }, 200);
+                this._debug.gui.add(collection.track.position, 'y');
+            }, 1000);
         }});
 
         this._tick();

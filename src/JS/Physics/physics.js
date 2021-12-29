@@ -20,7 +20,6 @@ export default class Physics {
 
     createCar() {
         this._car = new F1Car(this._world, this._simulation.scene)
-
     }
 
     get world() { return this._world; }
@@ -28,14 +27,14 @@ export default class Physics {
     _createWorld() {
         this._world = new CANNON.World()
         this._world.broadphase = new CANNON.SAPBroadphase(this._world)
-        this._world.gravity.set(0,-10, 0);
-        this._world.defaultContactMaterial.friction = 0;
+        this._world.gravity.set(0, -9.82, 0);
+        this._world.defaultContactMaterial.friction = 0.0;
 
         const groundMaterial = new CANNON.Material("groundMaterial");
         const wheelMaterial = new CANNON.Material("wheelMaterial");
         const wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
-            friction: 0.3,
-            restitution: 0,
+            friction: 0.7,
+            restitution: 0.5,
             contactEquationStiffness: 1000
         });
         this._world.addContactMaterial(wheelGroundContactMaterial);

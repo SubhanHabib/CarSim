@@ -14,7 +14,8 @@ export default class Renderer {
     _addRenderer() {
         this._renderer = new THREE.WebGLRenderer({
             canvas: this._simulation._canvas,
-            alpha: true
+            alpha: true,
+            antialias: true
         });
         // this._renderer.shadowMap.enabled = true;
         this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;

@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     <title>F1 Simulator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,6 +36,21 @@
             <div class="hud__led led-8"></div>
             <div class="hud__led led-9"></div>
             <div class="hud__led led-10"></div>
+        </div>
+    </div>
+
+    <div class="touch-controls">
+        <div class="touch-controls__steering">
+            <button class="touch-controls__button touch-controls__arrow-left">L</button>
+            <button class="touch-controls__button touch-controls__arrow-right">R</button>
+        </div>
+        <div class="touch-controls__centre">
+            <button class="touch-controls__button touch-controls__camera">Camera</button>
+            <button class="touch-controls__button touch-controls__brake">Brake</button>
+        </div>
+        <div class="touch-controls__acceleration">
+            <button class="touch-controls__button touch-controls__go">G</button>
+            <button class="touch-controls__button touch-controls__reverse">R</button>
         </div>
     </div>
 </body>
