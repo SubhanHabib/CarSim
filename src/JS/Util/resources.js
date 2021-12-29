@@ -4,7 +4,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import Simulator from '../simulator';
 
 export default class Resources {
-    
+
     _collection = {};
 
     constructor({ onLoad }) {
@@ -70,10 +70,20 @@ export default class Resources {
             }
         )
         gltfLoader.load(
+            './models/Car Steering Wheel.gltf',
+            (gltf) => {
+                const obj = new THREE.Group();
+                // gltf.scene.children[0].rotation.y = Math.PI
+                gltf.scene.children[0].castShadow = false
+                obj.add(gltf.scene.children[0])
+                this._collection['steeringWheel'] = obj;
+            }
+        )
+        gltfLoader.load(
             './models/Bahrain Track.gltf',
             (gltf) => {
                 const obj = new THREE.Group();
-                const offset = new THREE.Vector3(0, -0.2, 0.1)
+                const offset = new THREE.Vector3(0, -0.1, 0.1)
                 while (gltf.scene.children.length) {
                     gltf.scene.children[0].position.add(offset)
                     // gltf.scene.children[0].castShadow = true

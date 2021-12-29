@@ -80,14 +80,15 @@ export default class F1Car {
     }
 
     _createSteerimgWheel() {
-        this._steeringWheel = new THREE.Mesh(
-            new THREE.BoxGeometry(0.25, 0.15, 0.002),
-            new MeshStandardMaterial({
-                color: 0x080403,
-                emissive: 0x000000
-            })
-        )
-        this._steeringWheel.position.set(0, 0.3, 0.38)
+        this._steeringWheel = this._simulation.resources.steeringWheel
+        // new THREE.Mesh(
+        //     new THREE.BoxGeometry(0.25, 0.15, 0.002),
+        //     new MeshStandardMaterial({
+        //         color: 0x080403,
+        //         emissive: 0x000000
+        //     })
+        // )
+        this._steeringWheel.position.set(0, 0.25, 0.41)
         this.obj.add(this._steeringWheel)
 
         this._simulation._debug.gui.add(this._steeringWheel.position, 'x', 0, 1, 0.01);
@@ -101,18 +102,22 @@ export default class F1Car {
         const texture = this.textureLoader.load('/textures/Car Shadow.png')
         this._shadowPlane = new THREE.Group();
 
-        const scale = 4;
+        const scale = 1;
         const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(9.6 * scale, 10.8 * scale),
+            new THREE.PlaneGeometry(9 * scale, 9 * scale),
             new THREE.MeshBasicMaterial({
                 color: 0x000000,
                 transparent: true,
-                alphaMap: texture
+                alphaMap: texture,
+                opacity: 0.4
             })
         )
         plane.rotation.x = -Math.PI / 2
-        plane.position.y = -0.95
-        plane.position.z = -1.2
+        plane.position.y = -0.25
+        plane.position.z = -0.2
+        // this._simulation._debug.gui.add(plane.position, 'x', 0, Math.PI, 0.02);
+        // this._simulation._debug.gui.add(plane.position, 'y', -0.5, 1.5, 0.05);
+        // this._simulation._debug.gui.add(plane.position, 'z', -2, 2, 0.05);
         // plane.scale.set(new THREE.Vector3(2.0, 2.0, 2.0))
         this._shadowPlane.add(plane)
         this._simulation.scene.add(this._shadowPlane)
@@ -317,7 +322,7 @@ export default class F1Car {
     _keyLoop() {
         requestAnimationFrame(() => this._setHUD())
 
-        const engineForce = 2000;
+        const engineForce = 1500;
         const brakeForce = 90;
 
         this._setBrakeLight(false)
@@ -335,7 +340,7 @@ export default class F1Car {
 
         // Acceleration
         if (this._simulation.keys['w'] || this._simulation.keys['ArrowUp']) {
-            if (this._vehicle.currentVehicleSpeedKmHour / 1.6 < 232) {
+            if (this._vehicle.currentVehicleSpeedKmHour / 1.6 < 200) {
                 this._vehicle.applyEngineForce(-engineForce, 0);
                 this._vehicle.applyEngineForce(-engineForce, 1);
             } else {
