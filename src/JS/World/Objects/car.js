@@ -98,8 +98,9 @@ export default class F1Car {
     }
 
     _createShadowTexture() {
+        const textureImage = require('../../../../assets/textures/Car Shadow.png');
         this.textureLoader = new THREE.TextureLoader()
-        const texture = this.textureLoader.load('/textures/Car Shadow.png')
+        const texture = this.textureLoader.load(textureImage)
         this._shadowPlane = new THREE.Group();
 
         const scale = 1;
@@ -250,7 +251,7 @@ export default class F1Car {
         wheelRearGeometry.rotateZ(Math.PI / 2);
         const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x101010 });
         const createWheel = isRearAxel => {
-            this._createTyreShadow();
+            // this._createTyreShadow();
             return isRearAxel ? this.tyreRear.clone() : this.tyreFront.clone();
             // const mesh = new THREE.Mesh(isRearAxel ? wheelRearGeometry : wheelFrontGeometry, wheelMaterial)
             // mesh.castShadow = true
@@ -284,7 +285,7 @@ export default class F1Car {
                 // update wheel visuals
                 carWheels[i].position.copy(t.position);
                 carWheels[i].quaternion.copy(t.quaternion);
-                this.tyreShadows[i].position.copy(t.position);
+                // this.tyreShadows[i].position.copy(t.position);
                 // this.tyreShadows[i].quaternion.copy(t.quaternion);
                 // this.tyreShadows[i].rotation.x = -Math.PI/2
             }
