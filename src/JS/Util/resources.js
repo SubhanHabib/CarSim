@@ -2,22 +2,27 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import Simulator from '../simulator';
+import { LoadingManager } from 'three';
 
 export default class Resources {
 
     _collection = {};
 
     constructor({ onLoad }) {
-        this._onLoad = onLoad;
         this._simulation = new Simulator();
 
-        const dracoLoader = new DRACOLoader()
+        const loadingManager = new LoadingManager(
+            (e) => {
+                onLoad(this._collection)
+                console.log('loaded')
+            }
+        );
+
+        const dracoLoader = new DRACOLoader(loadingManager)
         dracoLoader.setDecoderPath('/draco/')
 
-        const gltfLoader = new GLTFLoader()
-        gltfLoader.setDRACOLoader(dracoLoader)
-
-        let mixer = null
+        const gltfLoader = new GLTFLoader(loadingManager)
+        // gltfLoader.setDRACOLoader(dracoLoader)
 
         gltfLoader.load(
             './models/Car.gltf',
@@ -26,42 +31,24 @@ export default class Resources {
                 const offset = new THREE.Vector3(0, -0.2, 0.1)
                 while (gltf.scene.children.length) {
                     gltf.scene.children[0].position.add(offset)
-                    // gltf.scene.children[0].castShadow = true
-                    // gltf.scene.children[0].receiveShadow = true
-                    // gltf.scene.children[0].material.encoding = THREE.sRGBEncoding
-                    // gltf.scene.children[0].material.wireframe = true
-
                     obj.add(gltf.scene.children[0])
                 }
-                // obj.castShadow = true;
                 this._collection['car'] = obj;
-                this._onLoad(this._collection)
-
-                // obj.receiveShadow = true
-                // gltf.scene.children[0].material.encoding = THREE.sRGBEncoding
-                // this._simulation.scene.add(obj)
-                // this._physics.createCar(obj)
             }
         )
         gltfLoader.load(
             './models/Car Tyre Front.gltf',
-            (gltf) => {
+            gltf => {
                 const obj = new THREE.Group();
-                // const offset = new THREE.Vector3(0, -0.2, 0.1)
-
-                // console.log(gltf.scene.children[0])
-                // gltf.scene.children[0].position.add(offset)
-                gltf.scene.children[0].rotation.y = Math.PI
-                gltf.scene.children[0].castShadow = true
-                obj.add(gltf.scene.children[0])
-                // this._simulation.scene.add(obj)
+                gltf.scene.children[0].rotation.y = Math.PI;
+                gltf.scene.children[0].castShadow = true;
+                obj.add(gltf.scene.children[0]);
                 this._collection['tyreFront'] = obj;
-                // this._collection['tyre'] = gltf.scene.children[0];
             }
         )
         gltfLoader.load(
             './models/Car Tyre Rear.gltf',
-            (gltf) => {
+            gltf => {
                 const obj = new THREE.Group();
                 gltf.scene.children[0].rotation.y = Math.PI
                 gltf.scene.children[0].castShadow = true
@@ -71,35 +58,13 @@ export default class Resources {
         )
         gltfLoader.load(
             './models/Car Steering Wheel.gltf',
-            (gltf) => {
+            gltf => {
                 const obj = new THREE.Group();
                 // gltf.scene.children[0].rotation.y = Math.PI
-                gltf.scene.children[0].castShadow = false
+                // gltf.scene.children[0].castShadow = false
                 obj.add(gltf.scene.children[0])
                 this._collection['steeringWheel'] = obj;
             }
         )
-        gltfLoader.load(
-            './models/Bahrain Track.gltf',
-            (gltf) => {
-                const obj = new THREE.Group();
-                const offset = new THREE.Vector3(0, -0.1, 0.1)
-                while (gltf.scene.children.length) {
-                    gltf.scene.children[0].position.add(offset)
-                    // gltf.scene.children[0].castShadow = true
-                    // gltf.scene.children[0].receiveShadow = true
-                    // gltf.scene.children[0].material.encoding = THREE.sRGBEncoding
-                    // gltf.scene.children[0].material.wireframe = true
-
-                    obj.add(gltf.scene.children[0])
-                }
-                // this._simulation.scene.add(obj)
-                this._collection['track'] = obj;
-                // this._collection['tyre'] = gltf.scene.children[0];
-            }
-        )
-
-
     }
 }
-

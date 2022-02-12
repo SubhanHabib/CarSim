@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 import Simulator from '../../simulator';
 import { MeshStandardMaterial } from 'three';
 
@@ -24,7 +23,7 @@ export default class F1Car {
         useCustomSlidingRotationalSpeed: true,
     }
 
-    constructor(world, scene,) {
+    constructor(world, scene) {
         this._simulation = new Simulator();
         this._showHelper = false;
         this.obj = this._simulation.resources.car;
@@ -51,6 +50,8 @@ export default class F1Car {
         }
 
         this._simulation._camera._controls.target = this.obj.position
+
+        console.log(this._shadowPlane)
     }
 
     _createCamera() {
@@ -72,9 +73,9 @@ export default class F1Car {
         //     camera.updateProjectionMatrix();
         // });
         // this._simulation._debug.gui.add(camera.position, 'x', 0, 5);
-        this._simulation._debug.gui.add(camera.position, 'y', 0.5, 1.5, 0.05);
-        this._simulation._debug.gui.add(camera.position, 'z', -1, 0, 0.05);
-        this._simulation._debug.gui.add(camera.rotation, 'x', 0, Math.PI, 0.02);
+        // this._simulation._debug.gui.add(camera.position, 'y', 0.5, 1.5, 0.05);
+        // this._simulation._debug.gui.add(camera.position, 'z', -1, 0, 0.05);
+        // this._simulation._debug.gui.add(camera.rotation, 'x', 0, Math.PI, 0.02);
         // this._simulation._debug.gui.add(camera.rotation, 'y', 0, Math.PI, 0.02);
         // this._simulation._debug.gui.add(camera.rotation, 'z', 0, Math.PI, 0.02);
     }
@@ -91,16 +92,16 @@ export default class F1Car {
         this._steeringWheel.position.set(0, 0.25, 0.41)
         this.obj.add(this._steeringWheel)
 
-        this._simulation._debug.gui.add(this._steeringWheel.position, 'x', 0, 1, 0.01);
-        this._simulation._debug.gui.add(this._steeringWheel.position, 'y', 0, 1, 0.01);
-        this._simulation._debug.gui.add(this._steeringWheel.position, 'z', -1, 1, 0.01);
+        // this._simulation._debug.gui.add(this._steeringWheel.position, 'x', 0, 1, 0.01);
+        // this._simulation._debug.gui.add(this._steeringWheel.position, 'y', 0, 1, 0.01);
+        // this._simulation._debug.gui.add(this._steeringWheel.position, 'z', -1, 1, 0.01);
 
     }
 
     _createShadowTexture() {
-        const textureImage = require('../../../../assets/textures/Car Shadow.png');
+        
         this.textureLoader = new THREE.TextureLoader()
-        const texture = this.textureLoader.load(textureImage)
+        const texture = this.textureLoader.load('textures/Car Shadow.png')
         this._shadowPlane = new THREE.Group();
 
         const scale = 1;
@@ -110,11 +111,11 @@ export default class F1Car {
                 color: 0x000000,
                 transparent: true,
                 alphaMap: texture,
-                opacity: 0.4
+                opacity: 0.6
             })
         )
         plane.rotation.x = -Math.PI / 2
-        plane.position.y = -0.25
+        plane.position.y = -0.23
         plane.position.z = -0.2
         // this._simulation._debug.gui.add(plane.position, 'x', 0, Math.PI, 0.02);
         // this._simulation._debug.gui.add(plane.position, 'y', -0.5, 1.5, 0.05);
@@ -126,7 +127,7 @@ export default class F1Car {
 
     _createTyreShadow() {
         if (!this.tyreShadows) this.tyreShadows = []
-        if (!this.tyreTexture) this.tyreTexture = this.textureLoader.load('/textures/Car Tyre Shadow.png')
+        if (!this.tyreTexture) this.tyreTexture = this.textureLoader.load('textures/Car Tyre Shadow.png')
         if (!this.tyreMaterial) this.tyreMaterial = new THREE.MeshBasicMaterial({
             // color: 0x000000,
             // transparent: true,
@@ -236,7 +237,6 @@ export default class F1Car {
             { x: axlewidth, z: rearAxelOffset },
             { x: -axlewidth, z: rearAxelOffset }
         ].forEach(({ x, z }) => {
-            console.log(x, z)
             this._options.chassisConnectionPointLocal.set(x, 0.11, z);
             this._vehicle.addWheel(this._options);
         });
@@ -296,7 +296,7 @@ export default class F1Car {
      * Ease Steering
      */
     _isSteering = 0;
-    _maxSteerVal = 0.14;
+    _maxSteerVal = 0.25;
     _steeringInterpolation(t) {
         const easeSine = t => Math.sin((t * Math.PI) / 2);
         t = easeSine(t);
@@ -323,8 +323,8 @@ export default class F1Car {
     _keyLoop() {
         requestAnimationFrame(() => this._setHUD())
 
-        const engineForce = 1500;
-        const brakeForce = 90;
+        const engineForce = 2000;
+        const brakeForce = 200;
 
         this._setBrakeLight(false)
         this._vehicle.setBrake(0, 0);
@@ -393,7 +393,6 @@ export default class F1Car {
         const deltaTime = elapsedTime - this.oldElapsedTime;
         this.oldElapsedTime = elapsedTime;
         this._world.step(1 / 60, deltaTime, 3);
-        // console.log(this._vehicle.wheelInfos[2].worldTransform.quaternion)
 
         this.obj.position.copy(this._chassisBody.position);
         this.obj.quaternion.copy(this._chassisBody.quaternion);

@@ -24,7 +24,6 @@ export default class Simulator {
     constructor(canvas) {
         if (ThreeJSSimulation) return ThreeJSSimulation;
         ThreeJSSimulation = this;
-        console.log(this._sizes)
 
         this._canvas = canvas;
         this._scene = new THREE.Scene();
@@ -35,28 +34,20 @@ export default class Simulator {
         this._debug = new Debug();
         this._renderer = new Renderer();
         this._physics = new Physics();
-        console.log('make env')
+
         this._environment = new Environment();
         
-        this._resources = new Resources({ onLoad: (collection) => {
-            
-            this.scene.add(collection.car)
-            setTimeout(() => {
-                this.scene.add(collection.track)
-                console.log(collection.track)
-                collection.track.position.set(0.0, -10.0, 0.0)
-                collection.track.scale.set(10.0, 1, 10.0)
+        this._resources = new Resources({
+            onLoad: collection => {
+                console.log('collection', collection)
+                this.scene.add(collection.car)
                 this._physics.createCar()
-                this._debug.gui.add(collection.track.position, 'y');
-            }, 1000);
-        }});
+            }
+        });
 
         this._tick();
 
         window.addEventListener('resize', () => this._resize());
-
-
-
     }
 
     get keys()      { return this._keyHandler._keys;        }

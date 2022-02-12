@@ -45,7 +45,8 @@ html, body {
 
 .hud .hud__rpm,
 .hud .hud__kmh {
-    background-color: rgba(79, 131, 180, 0.8);
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.2);
     text-align: center;
     margin: 0 0.1rem;
     border-radius: 0.6rem 0.6rem 0 0;
@@ -90,7 +91,8 @@ html, body {
     right: 0;
     bottom: 0;
     height: 3.0rem;
-    background-color: rgba(79, 131, 180, 0.8);
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.2);
     text-align: center;
     border-radius: 0.6rem 0.6rem 0 0;
     border-top: 0.1rem solid rgba(255, 255, 255, 0.4);
@@ -109,11 +111,11 @@ html, body {
     justify-content: center;
 }
 .hud .hud__leds .hud__led {
-    border-radius: 50%;
-    width: 0.5rem;
-    height: 0.5rem;
+    border-radius: 0.1rem;
+    width: 0.7rem;
+    height: 0.1rem;
     background-color: rgb(180, 180, 180);
-    margin: 0.2rem;
+    margin: 0.3rem;
     border: 0.1rem solid rgb(220, 220, 220);
 }
 .hud .hud__leds .hud__led.red {

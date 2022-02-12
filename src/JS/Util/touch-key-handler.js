@@ -33,7 +33,6 @@ export default class TouchKeyHandler {
     ]
     constructor() {
         this._touchKeys.forEach(item => {
-            console.log(item)
             const button = document.querySelector(item.selector);
             button.addEventListener('touchstart', () => {
                 window.dispatchEvent(new KeyboardEvent('keydown',{'key': item.key}));

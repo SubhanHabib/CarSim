@@ -14,21 +14,20 @@ export default class Environment {
         this.groundMaterial = new CANNON.Material("groundMaterial");
         this.groundMaterial.friction = 0.7
 
+        const floor = new THREE.Mesh(
+            new THREE.PlaneGeometry(200, 200),
+            new THREE.MeshStandardMaterial({
+                color: '#0c0d0e',
+                metalness: 0.3,
+                roughness: 0.6,
+                side: THREE.DoubleSide
+            })
+        )
 
-        // const floor = new THREE.Mesh(
-        //     new THREE.PlaneGeometry(200, 200),
-        //     new THREE.MeshStandardMaterial({
-        //         color: '#0c0d0e',
-        //         metalness: 0.3,
-        //         roughness: 0.6,
-        //         side: THREE.DoubleSide
-        //     })
-        // )
-        // console.log(floor)
-        // floor.receiveShadow = true
-        // floor.rotation.x = - Math.PI * 0.5
-        // floor.position.y = -10
-        // this._simulation.scene.add(floor)
+        floor.receiveShadow = true
+        floor.rotation.x = - Math.PI * 0.5
+        floor.position.y = -10
+        this._simulation.scene.add(floor)
 
 
         const ground2 = new CANNON.Body({ mass: 0, material: this.groundMaterial });
