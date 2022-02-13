@@ -5,14 +5,12 @@ const path = require('path')
 
 module.exports = {
     entry: path.resolve(__dirname, '../src/JS/main.js'),
-    output:
-    {
+    output: {
         filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, '../dist')
     },
     devtool: 'source-map',
-    plugins:
-    [
+    plugins: [
         new CopyWebpackPlugin({
             patterns: [
                 { from: path.resolve(__dirname, '../assets') }
@@ -24,10 +22,8 @@ module.exports = {
         }),
         new MiniCSSExtractPlugin()
     ],
-    module:
-    {
-        rules:
-        [
+    module: {
+        rules: [
             // HTML
             {
                 test: /\.(html)$/,
@@ -38,51 +34,52 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use:
-                [
-                    'babel-loader'
-                ]
+                use: ['babel-loader']
             },
 
             // CSS
             {
                 test: /\.css$/,
-                use:
-                [
+                use: [
                     MiniCSSExtractPlugin.loader,
                     'css-loader'
                 ]
             },
 
+            // SCSS
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    // Creates `style` nodes from JS strings
+                    "style-loader",
+                    // Translates CSS into CommonJS
+                    "css-loader",
+                    // Compiles Sass to CSS
+                    "sass-loader",
+                ],
+            },
+
             // Images
             {
                 test: /\.(jpg|png|gif|svg)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            outputPath: 'assets/images/'
-                        }
+                use:  [{
+                    loader: 'file-loader',
+                    options: {
+                        // esModule: false,
                     }
-                ]
+                }]
             },
 
             // Fonts
-            {
-                test: /\.(ttf|eot|woff|woff2)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            outputPath: 'assets/fonts/'
-                        }
-                    }
-                ]
-            }
+            // {
+            //     test: /\.(ttf|eot|woff|woff2)$/,
+            //     use: [{
+            //         loader: 'file-loader',
+            //         options: {
+            //             outputPath: 'assets/fonts/'
+            //         }
+            //     }]
+            // }
         ]
     }
 }

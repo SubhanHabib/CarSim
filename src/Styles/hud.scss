@@ -1,0 +1,164 @@
+.hud {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    width: 30.0rem;
+    justify-content: center;
+    align-items: end;
+    bottom: 2.0rem;
+    left: calc(50% - 15.0rem);
+    font-family: 'Genos', sans-serif;
+    z-index: 1;
+    color: white;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 0.1rem;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.0));
+    }
+    
+    .hud__rpm,
+    .hud__kmh {
+        backdrop-filter: blur(10px);
+        background-color: rgba(0, 0, 0, 0.2);
+        text-align: center;
+        margin: 0 0.1rem;
+        border-radius: 0.6rem 0.6rem 0 0;
+        border-top: 0.1rem solid rgba(255, 255, 255, 0.4);
+    }
+
+    .hud__rpm {
+        flex: 0 0 8.0rem;
+    }
+
+    .hud__rpm .rpm__value,
+    .hud__kmh .kmh__value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        line-height: 1.4rem;
+        letter-spacing: 0.05rem;
+    }
+
+    .hud__rpm .rpm__label,
+    .hud__kmh .kmh__label {
+        font-size: 1.1rem;
+        line-height: 1.1rem;
+        font-weight: 500;
+        letter-spacing: 0.03rem;
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+    }
+
+    .hud__gear {
+        position: relative;
+        flex: 0 0 6.0rem;
+        font-size: 6.0rem;
+        line-height: 5.0rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 0 0.1rem;
+
+        &::before {
+            content: '';
+            z-index: -1;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 3.0rem;
+            backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border-radius: 0.6rem 0.6rem 0 0;
+            border-top: 0.1rem solid rgba(255, 255, 255, 0.4);
+        }
+    }
+
+    .hud__gear,
+    .hud__kmh {
+        flex: 0 0 8.0rem;
+        text-align: center;
+    }
+
+    .hud__leds {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1.4rem;
+        display: flex;
+        justify-content: center;
+
+        .hud__led {
+            border-radius: 0.1rem;
+            width: 0.7rem;
+            height: 0.1rem;
+            background-color: rgb(180, 180, 180);
+            margin: 0.3rem;
+            border: 0.1rem solid rgb(220, 220, 220);
+
+            &.red {
+                background-color: #f21629;
+                border-color: #f21629;
+            }
+        }
+    }
+    
+
+    @at-root body.isMobile & {
+        width: unset;
+        bottom: 1.1rem;
+        left: 0;
+        right: 0;
+        height: 2.6rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+        background-color: rgba(0, 0, 0, 0.4);
+    
+        .hud__rpm,
+        .hud__kmh {
+            backdrop-filter: unset;
+            background-color: unset;
+            border: none;
+        }
+
+        .hud__rpm .rpm__value,
+        .hud__kmh .kmh__value {
+            font-size: 1.2rem;
+            line-height: 1.2rem;
+        }
+
+        .hud__rpm .rpm__label,
+        .hud__kmh .kmh__label {
+            font-size: 1.0rem;
+            line-height: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .hud__gear {
+            font-size: 4.8rem;
+            line-height: 4.6rem;
+
+            &::before {
+                border: none;
+                backdrop-filter: unset;
+                background-color: unset;
+            }
+        }
+        
+        .hud__leds {
+            background-color: rgba(0, 0, 0, 0.4);
+            bottom: -1.1rem;
+            .hud__led {
+                border-radius: 0.1rem;
+                width: 0.8rem;
+                height: 0.1rem;
+                margin: 0.45rem;
+                box-sizing: border-box;
+            }
+        }
+    }
+}

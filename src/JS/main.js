@@ -1,6 +1,5 @@
-import '../style.css'
+import '../style.scss'
 
-import {debugUI} from './Util/debug.js';
 import Simulator from './simulator';
 import * as Stats from 'stats.js';
 
@@ -24,13 +23,12 @@ function isMobileDevice() {
 	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
-if (!isMobileDevice()) document.querySelector('.touch-controls').style.display = 'none'
+document.body.classList.toggle('isMobile', !!isMobileDevice())
 
-console.log(isMobileDevice())
-/**
- * Debug
- */
-// debugUI.addObject('resetCar', () => car.reset())
+const a = require('../../assets/icons/caret-up.svg');
+console.log(a.default)
+document.querySelector('.touch-controls .touch-controls__go img').src = a.default;
+
 
 // const axesHelper = new THREE.AxesHelper( 15 );
 // ThreeJSSimulation.scene.add( axesHelper );
