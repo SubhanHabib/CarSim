@@ -14,7 +14,7 @@ export default class Environment {
         this.groundMaterial = new CANNON.Material("groundMaterial");
         this.groundMaterial.friction = 0.7
 
-        const floorGeo = new THREE.PlaneGeometry(400, 400);
+        const floorGeo = new THREE.PlaneGeometry(1, 1);
         floorGeo.rotateX(- Math.PI * 0.5)
         const floor = new THREE.Mesh(
             floorGeo,

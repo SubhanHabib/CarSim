@@ -26,44 +26,54 @@ export default class Resources {
 
         gltfLoader.load(
             './models/Car.gltf',
-            (gltf) => {
+            gltf => {
+                // gltf.scene.scale.set(0.001, 0.001, 0.001); 
+
+                // gltf.scene.scale.set(.001*gltf.scene.scale.x, .001*gltf.scene.scale.y, .001 * gltf.scene.scale.z)
+                // gltf.scene.updateWorldMatrix(true) 
                 const obj = new THREE.Group();
                 const offset = new THREE.Vector3(0, -0.2, 0.1)
+                const scale = new THREE.Vector3(0.5, 0.5, 0.5)
+                // obj.updateWorldMatrix(true) 
+                // gltf.scene.scale.set(0.5, 0.5, 0.5); 
+                obj.scale.set(0.25, 0.25, 0.25);
                 while (gltf.scene.children.length) {
                     gltf.scene.children[0].position.add(offset)
-                    gltf.scene.children[0].receiveShadow = true
+                    // gltf.scene.children[0].scale.set(scale)
+                    // gltf.scene.children[0].receiveShadow = true
                     obj.add(gltf.scene.children[0])
+                    // obj.scale.set(.001*gltf.scene.scale.x, .001*gltf.scene.scale.y, .001 * gltf.scene.scale.z)
                 }
                 this._collection['car'] = obj;
+                // this._collection['car'].scale.set(scale)
             }
         )
+
         gltfLoader.load(
             './models/Car Tyre Front.gltf',
-            gltf => {
-                const obj = new THREE.Group();
+            gltf => {        
+                gltf.scene.scale.set(0.25, 0.25, 0.25);
                 gltf.scene.children[0].rotation.y = Math.PI;
                 gltf.scene.children[0].castShadow = true;
-                obj.add(gltf.scene.children[0]);
-                this._collection['tyreFront'] = obj;
+                this._collection['tyreFront'] = gltf.scene;
             }
         )
+
         gltfLoader.load(
             './models/Car Tyre Rear.gltf',
             gltf => {
-                const obj = new THREE.Group();
+                gltf.scene.scale.set(0.25, 0.25, 0.25);
                 gltf.scene.children[0].rotation.y = Math.PI
                 gltf.scene.children[0].castShadow = true;
-                obj.add(gltf.scene.children[0])
-                this._collection['tyreRear'] = obj;
+                this._collection['tyreRear'] = gltf.scene;
             }
         )
+
         gltfLoader.load(
             './models/Car Steering Wheel.gltf',
             gltf => {
-                const obj = new THREE.Group();
-                // gltf.scene.children[0].castShadow = true;
-                obj.add(gltf.scene.children[0])
-                this._collection['steeringWheel'] = obj;
+                // gltf.scene.scale.set(0.5, 0.5, 0.5); 
+                this._collection['steeringWheel'] = gltf.scene;
             }
         )
     }

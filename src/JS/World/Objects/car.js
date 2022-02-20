@@ -23,9 +23,12 @@ export default class F1Car {
         useCustomSlidingRotationalSpeed: true,
     }
 
+    _scale = 0.25;
+    _carSize = [2 * this._scale, 0.5 * this._scale, 5.3 * this._scale]
+
     constructor(world, scene) {
         this._simulation = new Simulator();
-        this._showHelper = false;
+        this._showHelper = true;
         this._car = this._simulation.resources.car;
         this.tyreRear = this._simulation.resources.tyreRear;
         this.tyreFront = this._simulation.resources.tyreFront;
@@ -80,20 +83,12 @@ export default class F1Car {
 
     _createSteerimgWheel() {
         this._steeringWheel = this._simulation.resources.steeringWheel
-        // new THREE.Mesh(
-        //     new THREE.BoxGeometry(0.25, 0.15, 0.002),
-        //     new MeshStandardMaterial({
-        //         color: 0x080403,
-        //         emissive: 0x000000
-        //     })
-        // )
         this._steeringWheel.position.set(0, 0.25, 0.41)
         this._car.add(this._steeringWheel)
 
         // this._simulation._debug.gui.add(this._steeringWheel.position, 'x', 0, 1, 0.01);
         // this._simulation._debug.gui.add(this._steeringWheel.position, 'y', 0, 1, 0.01);
         // this._simulation._debug.gui.add(this._steeringWheel.position, 'z', -1, 1, 0.01);
-
     }
 
     _createChassisShadowTexture() {
@@ -131,7 +126,6 @@ export default class F1Car {
             alphaMap: this.tyreTexture,
             alphaTest: 0.1,
             opacity: 0.2,
-            // blending: THREE.MultiplyBlending
             blending: THREE.CustomBlending,
             blendSrc: THREE.OneFactor
         })
@@ -213,8 +207,6 @@ export default class F1Car {
         this._brakeLight.material.emissive = new THREE.Color(braking ? 0xff0000 : 0x000000)
     }
 
-    _carSize = [2, 0.5, 5.3]
-
     _createChassis() {
         var chassisShape = new CANNON.Box(new CANNON.Vec3(this._carSize[0] / 2, this._carSize[1] / 2, this._carSize[2] / 2));
         var chassisBody = new CANNON.Body({ mass: 790 });
@@ -234,28 +226,28 @@ export default class F1Car {
     }
 
     _createWheels() {
-        var axlewidth = 3 / 4;
-        const frontAxelOffset = 1.6;
-        const rearAxelOffset = -2;
+        var axlewidth = 3 / 4 * this._scale;
+        const frontAxelOffset = 1.6 * this._scale;
+        const rearAxelOffset = -2 * this._scale;
         [
             { x: axlewidth, z: frontAxelOffset },
             { x: -axlewidth, z: frontAxelOffset },
             { x: axlewidth, z: rearAxelOffset },
             { x: -axlewidth, z: rearAxelOffset }
         ].forEach(({ x, z }) => {
-            this._options.chassisConnectionPointLocal.set(x, 0.11, z);
+            this._options.chassisConnectionPointLocal.set(x, 0.11 * this._scale, z);
             this._vehicle.addWheel(this._options);
         });
         this._vehicle.addToWorld(this._world);
 
-        this._carChassis = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 5.3));
+        this._carChassis = new THREE.Mesh(new THREE.BoxGeometry(...this._carSize));
         if (this._showHelper) this._scene.add(this._carChassis)
 
-        const wheelFrontGeometry = new THREE.CylinderGeometry(1, 1, 0.305 * 4, 16)
-        const wheelRearGeometry = new THREE.CylinderGeometry(1, 1, 0.405 * 4, 16)
-        wheelFrontGeometry.rotateZ(Math.PI / 2);
-        wheelRearGeometry.rotateZ(Math.PI / 2);
-        const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x101010 });
+        // const wheelFrontGeometry = new THREE.CylinderGeometry(1, 1, 0.305 * 4, 16)
+        // const wheelRearGeometry = new THREE.CylinderGeometry(1, 1, 0.405 * 4, 16)
+        // wheelFrontGeometry.rotateZ(Math.PI / 2);
+        // wheelRearGeometry.rotateZ(Math.PI / 2);
+        // const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x101010 });
         const createWheel = isRearAxel => {
             return isRearAxel
                 ? { obj: this.tyreRear.clone(), shadow: this._createTyreShadow() }
@@ -270,8 +262,8 @@ export default class F1Car {
         const wheelPhysicsMaterial = new CANNON.Material("wheelMaterial");
         wheelPhysicsMaterial.friction = 0
         this._vehicle.wheelInfos.forEach((wheel, i) => {
-            const shape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius * 1.5, 10);
-            const body = new CANNON.Body({ mass: 25, material: wheelPhysicsMaterial });
+            const shape = new CANNON.Cylinder(wheel.radius * this._scale, wheel.radius * this._scale, wheel.radius * 1.5 * this._scale, 10);
+            const body = new CANNON.Body({ mass: 25 * this._scale, material: wheelPhysicsMaterial });
             const q = new CANNON.Quaternion();
             q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
             body.addShape(shape, new CANNON.Vec3(), q);
