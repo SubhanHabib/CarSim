@@ -26,14 +26,14 @@ export default class F1Car {
     constructor(world, scene) {
         this._simulation = new Simulator();
         this._showHelper = false;
-        this.obj = this._simulation.resources.car;
+        this._car = this._simulation.resources.car;
         this.tyreRear = this._simulation.resources.tyreRear;
         this.tyreFront = this._simulation.resources.tyreFront;
         this._world = world;
         this._scene = scene;
 
         this._createCamera();
-        this._createShadowTexture();
+        this._createChassisShadowTexture();
 
         this._createChassis();
         this._createVehicle();
@@ -49,21 +49,19 @@ export default class F1Car {
             revCounter: document.querySelectorAll('.hud .hud__leds .hud__led')
         }
 
-        this._simulation._camera._controls.target = this.obj.position
-
-        console.log(this._shadowPlane)
+        this._simulation._camera._controls.target = this._car.position;
     }
 
     _createCamera() {
         const cameraRear = new THREE.PerspectiveCamera(60, this._simulation._sizes.width / this._simulation._sizes.height, 0.1, 1000);
-        this.obj.add(cameraRear)
+        this._car.add(cameraRear)
         cameraRear.position.set(0, 1.5, -4);
         cameraRear.rotation.x = 0.35;
         cameraRear.rotation.y = Math.PI;
         this._simulation._camera.addCamera(cameraRear)
 
         const camera = new THREE.PerspectiveCamera(70, this._simulation._sizes.width / this._simulation._sizes.height, 0.1, 1000);
-        this.obj.add(camera)
+        this._car.add(camera)
         camera.position.set(0, 0.8, -0.3);
         camera.rotation.x = 0.3;
         camera.rotation.y = Math.PI;
@@ -90,7 +88,7 @@ export default class F1Car {
         //     })
         // )
         this._steeringWheel.position.set(0, 0.25, 0.41)
-        this.obj.add(this._steeringWheel)
+        this._car.add(this._steeringWheel)
 
         // this._simulation._debug.gui.add(this._steeringWheel.position, 'x', 0, 1, 0.01);
         // this._simulation._debug.gui.add(this._steeringWheel.position, 'y', 0, 1, 0.01);
@@ -98,8 +96,7 @@ export default class F1Car {
 
     }
 
-    _createShadowTexture() {
-        
+    _createChassisShadowTexture() {
         this.textureLoader = new THREE.TextureLoader()
         const texture = this.textureLoader.load('textures/Car Shadow.png')
         this._shadowPlane = new THREE.Group();
@@ -111,41 +108,50 @@ export default class F1Car {
                 color: 0x000000,
                 transparent: true,
                 alphaMap: texture,
-                opacity: 0.6
+                opacity: 0.3
             })
         )
         plane.rotation.x = -Math.PI / 2
-        plane.position.y = -0.23
-        plane.position.z = -0.2
+        plane.position.y = -0.24 // vertical
+        // plane.position.z = -0.2
         // this._simulation._debug.gui.add(plane.position, 'x', 0, Math.PI, 0.02);
         // this._simulation._debug.gui.add(plane.position, 'y', -0.5, 1.5, 0.05);
         // this._simulation._debug.gui.add(plane.position, 'z', -2, 2, 0.05);
         // plane.scale.set(new THREE.Vector3(2.0, 2.0, 2.0))
         this._shadowPlane.add(plane)
-        this._simulation.scene.add(this._shadowPlane)
+        this._car.add(this._shadowPlane)
     }
 
     _createTyreShadow() {
         if (!this.tyreShadows) this.tyreShadows = []
         if (!this.tyreTexture) this.tyreTexture = this.textureLoader.load('textures/Car Tyre Shadow.png')
         if (!this.tyreMaterial) this.tyreMaterial = new THREE.MeshBasicMaterial({
-            // color: 0x000000,
-            // transparent: true,
-            // map: this.tyreTexture,
-            blending: THREE.MultiplyBlending
+            color: 0x000000,
+            transparent: true,
+            alphaMap: this.tyreTexture,
+            alphaTest: 0.1,
+            opacity: 0.2,
+            // blending: THREE.MultiplyBlending
+            blending: THREE.CustomBlending,
+            blendSrc: THREE.OneFactor
         })
 
         const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(6, 6),
-            this.tyreMaterial
+            new THREE.PlaneGeometry(1.4, 1.4),
+            this.tyreMaterial,
         )
-        plane.rotation.x = -Math.PI / 2
-        plane.position.y = -0.98
-        plane.position.z = -0.4
+        plane.rotation.x = -Math.PI / 2;
+        plane.position.y = -0.34;
         const shadow = new THREE.Group();
         shadow.add(plane);
         this.tyreShadows.push(shadow)
-        this._simulation.scene.add(shadow)
+        // this._scene.add(shadow)
+        
+        // this._simulation._debug.gui.add(plane.position, 'y', -2, 2, 0.05).name('tyre y');
+        // this._simulation._debug.gui.add(plane.quaternion, 'x', -2, 2, 0.01).name('TyreRotation y');
+        // this._simulation._debug.gui.add(plane.quaternion, 'y', -2, 2, 0.01).name('TyreRotation y');
+        // this._simulation._debug.gui.add(plane.quaternion, 'z', -2, 2, 0.01).name('TyreRotation y');
+        // this._simulation._debug.gui.add(plane.quaternion, 'w', -2, 2, 0.01).name('TyreRotation y');
     }
 
     reset() {
@@ -199,7 +205,7 @@ export default class F1Car {
         }
         brakeLight.rotation.y = Math.PI;
         brakeLight.position.set(0.025, 0.085, -2.57);
-        this.obj.add(brakeLight)
+        this._car.add(brakeLight)
     }
 
     _setBrakeLight(braking = false) {
@@ -242,8 +248,8 @@ export default class F1Car {
         });
         this._vehicle.addToWorld(this._world);
 
-        this._car = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 5.3));
-        if (this._showHelper) this._scene.add(this._car)
+        this._carChassis = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 5.3));
+        if (this._showHelper) this._scene.add(this._carChassis)
 
         const wheelFrontGeometry = new THREE.CylinderGeometry(1, 1, 0.305 * 4, 16)
         const wheelRearGeometry = new THREE.CylinderGeometry(1, 1, 0.405 * 4, 16)
@@ -251,8 +257,9 @@ export default class F1Car {
         wheelRearGeometry.rotateZ(Math.PI / 2);
         const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x101010 });
         const createWheel = isRearAxel => {
-            // this._createTyreShadow();
-            return isRearAxel ? this.tyreRear.clone() : this.tyreFront.clone();
+            return isRearAxel
+                ? { obj: this.tyreRear.clone(), shadow: this._createTyreShadow() }
+                : { obj: this.tyreFront.clone(), shadow: this._createTyreShadow() };
             // const mesh = new THREE.Mesh(isRearAxel ? wheelRearGeometry : wheelFrontGeometry, wheelMaterial)
             // mesh.castShadow = true
             // return mesh;
@@ -271,11 +278,10 @@ export default class F1Car {
             wheelBodies.push(body);
             carWheels.push(createWheel(i >= 2));
         });
-        this._scene.add(...carWheels);
+        this._scene.add(...carWheels.map(wheel => wheel.obj));
 
         // update the wheels to match the physics
         this._world.addEventListener('postStep', () => {
-            // this._vehicle.updateWheelTransform(i);
             for (let i = 0; i < this._vehicle.wheelInfos.length; i++) {
                 this._vehicle.updateWheelTransform(i);
                 const t = this._vehicle.wheelInfos[i].worldTransform;
@@ -283,11 +289,8 @@ export default class F1Car {
                 wheelBodies[i].position.copy(t.position);
                 wheelBodies[i].quaternion.copy(t.quaternion);
                 // update wheel visuals
-                carWheels[i].position.copy(t.position);
-                carWheels[i].quaternion.copy(t.quaternion);
-                // this.tyreShadows[i].position.copy(t.position);
-                // this.tyreShadows[i].quaternion.copy(t.quaternion);
-                // this.tyreShadows[i].rotation.x = -Math.PI/2
+                carWheels[i].obj.position.copy(t.position);
+                carWheels[i].obj.quaternion.copy(t.quaternion);
             }
         });
     }
@@ -394,13 +397,7 @@ export default class F1Car {
         this.oldElapsedTime = elapsedTime;
         this._world.step(1 / 60, deltaTime, 3);
 
-        this.obj.position.copy(this._chassisBody.position);
-        this.obj.quaternion.copy(this._chassisBody.quaternion);
         this._car.position.copy(this._chassisBody.position);
         this._car.quaternion.copy(this._chassisBody.quaternion);
-
-        this._shadowPlane.position.copy(this._chassisBody.position);
-        this._shadowPlane.quaternion.copy(this._chassisBody.quaternion);
-
     }
 }

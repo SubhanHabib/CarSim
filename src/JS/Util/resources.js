@@ -31,6 +31,7 @@ export default class Resources {
                 const offset = new THREE.Vector3(0, -0.2, 0.1)
                 while (gltf.scene.children.length) {
                     gltf.scene.children[0].position.add(offset)
+                    gltf.scene.children[0].receiveShadow = true
                     obj.add(gltf.scene.children[0])
                 }
                 this._collection['car'] = obj;
@@ -51,7 +52,7 @@ export default class Resources {
             gltf => {
                 const obj = new THREE.Group();
                 gltf.scene.children[0].rotation.y = Math.PI
-                gltf.scene.children[0].castShadow = true
+                gltf.scene.children[0].castShadow = true;
                 obj.add(gltf.scene.children[0])
                 this._collection['tyreRear'] = obj;
             }
@@ -60,8 +61,7 @@ export default class Resources {
             './models/Car Steering Wheel.gltf',
             gltf => {
                 const obj = new THREE.Group();
-                // gltf.scene.children[0].rotation.y = Math.PI
-                // gltf.scene.children[0].castShadow = false
+                // gltf.scene.children[0].castShadow = true;
                 obj.add(gltf.scene.children[0])
                 this._collection['steeringWheel'] = obj;
             }
