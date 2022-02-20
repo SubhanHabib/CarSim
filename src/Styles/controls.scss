@@ -24,16 +24,16 @@
 
     .touch-controls__centre {
         display: flex;
-        flex-direction: column;
+        // flex-direction: column;
     }
 
-    .touch-controls__centre .touch-controls__button {
-        height: 32px;
-        line-height: 32px;
-        width: 120px;
-        font-size: 16px;
-        text-transform: uppercase;
-    }
+    // .touch-controls__centre .touch-controls__button {
+    //     height: 32px;
+    //     line-height: 32px;
+    //     width: 120px;
+    //     font-size: 16px;
+    //     text-transform: uppercase;
+    // }
 
     .touch-controls__acceleration {
         display: flex;
@@ -69,6 +69,16 @@
 
         img {
             width: 1.2rem;
+        }
+
+        &.touch-controls__arrow-left {
+            img { transform: rotate3d(0, 0, 1, -90deg); }
+        }
+        &.touch-controls__arrow-right {
+            img { transform: rotate3d(0, 0, 1, 90deg); }
+        }
+        &.touch-controls__reverse {
+            img { transform: rotate3d(0, 0, 1, 180deg); }
         }
     }
 }

@@ -71,14 +71,19 @@ export default class F1Car {
         // directionalLight.shadow.camera.bottom = -5
         // directionalLight.shadow.camera.left = -5
 
-        this._car.add(directionalLight)
         // directionalLight.position.set(20, 35, 20)
         directionalLight.position.set(0, 20, 0)
+        this._car.add(directionalLight)
         const helper = new THREE.DirectionalLightHelper( directionalLight, 1 );
         // this._car.add(helper);
         this.light = directionalLight;
         const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
         // this._car.add(directionalLightCameraHelper)
+
+        
+        const directionalLight2 = new THREE.DirectionalLight(0xfefcff, 1.4)
+        directionalLight2.position.set(20, 35, 20)
+        this._car.add(directionalLight2)
     }
 
     _createCamera() {
@@ -288,7 +293,7 @@ export default class F1Car {
         const wheelPhysicsMaterial = new CANNON.Material("wheelMaterial");
         wheelPhysicsMaterial.friction = 0
         this._vehicle.wheelInfos.forEach((wheel, i) => {
-            const shape = new CANNON.Cylinder(wheel.radius * this._scale, wheel.radius * this._scale, wheel.radius * 1.5 * this._scale, 10);
+            const shape = new CANNON.Cylinder(wheel.radius * this._scale, wheel.radius * this._scale, wheel.radius * 1.5 * this._scale, 16);
             const body = new CANNON.Body({ mass: 25 * this._scale, material: wheelPhysicsMaterial });
             const q = new CANNON.Quaternion();
             q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
@@ -317,7 +322,7 @@ export default class F1Car {
      * Ease Steering
      */
     _isSteering = 0;
-    _maxSteerVal = 0.15;
+    _maxSteerVal = 0.2;
     _steeringInterpolation(t) {
         const easeSine = t => Math.sin((t * Math.PI) / 2);
         t = easeSine(t);

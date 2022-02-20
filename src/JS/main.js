@@ -25,9 +25,14 @@ function isMobileDevice() {
 
 document.body.classList.toggle('isMobile', !!isMobileDevice())
 
-const a = require('../../assets/icons/caret-up.svg');
-console.log(a.default)
-document.querySelector('.touch-controls .touch-controls__go img').src = a.default;
+const iconArrow = require('../../assets/icons/caret-up.svg');
+const iconStop = require('../../assets/icons/stop-solid.svg');
+const iconCamera = require('../../assets/icons/camera-rotate-solid.svg');
+['go', 'reverse', 'arrow-left', 'arrow-right'].forEach(dir =>
+	document.querySelector(`.touch-controls .touch-controls__${dir} img`).src = iconArrow.default
+);
+document.querySelector(`.touch-controls .touch-controls__camera img`).src = iconCamera.default
+document.querySelector(`.touch-controls .touch-controls__brake img`).src = iconStop.default
 
 
 // const axesHelper = new THREE.AxesHelper( 15 );

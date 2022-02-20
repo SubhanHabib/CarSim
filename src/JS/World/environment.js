@@ -3,13 +3,14 @@ import * as CANNON from 'cannon-es'
 
 import Simulator from "../simulator";
 import Mapper from '../Physics/mapper';
+import Scene from './scene';
 
 export default class Environment {
     constructor() {
         this._simulation = new Simulator();
+        this._scene = new Scene();
 
         const ObjectMapper = new Mapper();
-        this._addLighting();
 
         this.groundMaterial = new CANNON.Material("groundMaterial");
         this.groundMaterial.friction = 0.7
@@ -23,8 +24,6 @@ export default class Environment {
                 metalness: 0.3,
                 roughness: 0.6,
                 side: THREE.DoubleSide,
-                // depthWrite: false,
-                // depthTest: false
             })
         )
 
@@ -33,7 +32,8 @@ export default class Environment {
         this._simulation.scene.add(floor)
 
         const material = new THREE.ShadowMaterial();
-        material.opacity = 0.2;
+        material.opacity = 0.15;
+
 
         const plane = new THREE.Mesh(floorGeo, material);
         // plane.position.y = -200;
@@ -75,33 +75,5 @@ export default class Environment {
         this._simulation.world.addBody(ground);
         const obj = ObjectMapper.addVisuals({ body: ground })
         this._simulation.scene.add(obj)
-    }
-
-    _addLighting() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.8)
-        this._simulation.scene.add(ambientLight)
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
-        // directionalLight.castShadow = true
-        // directionalLight.shadow.bias = -0.001
-        // directionalLight.shadow.radius = 1.5
-        // directionalLight.shadow.mapSize.set(2048, 2048)
-        // directionalLight.shadow.camera.far = 62
-        // directionalLight.shadow.camera.near = 58
-
-        // directionalLight.shadow.camera.top = 5
-        // directionalLight.shadow.camera.right = 5
-        // directionalLight.shadow.camera.bottom = -5
-        // directionalLight.shadow.camera.left = -5
-
-        directionalLight.position.set(10, 15, 20)
-        // this._simulation.scene.add(directionalLight)
-
-        // const helper = new THREE.DirectionalLightHelper( directionalLight, 1 );
-        // this._simulation.scene.add( helper );
-        // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
-        // this._simulation.scene.add(directionalLightCameraHelper)
-        // this._simulation._debug.gui.add(directionalLight.shadow.camera, 'far', 0, 2000, 1).name('directionalLight far');
-        // this._simulation._debug.gui.add(directionalLight.shadow.camera, 'near', 0, 10, 1).name('directionalLight near');
     }
 }
