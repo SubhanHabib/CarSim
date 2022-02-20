@@ -14,7 +14,7 @@ export default class Environment {
         this.groundMaterial = new CANNON.Material("groundMaterial");
         this.groundMaterial.friction = 0.7
 
-        const floorGeo = new THREE.PlaneGeometry(1, 1);
+        const floorGeo = new THREE.PlaneGeometry(100,100);
         floorGeo.rotateX(- Math.PI * 0.5)
         const floor = new THREE.Mesh(
             floorGeo,
@@ -29,25 +29,23 @@ export default class Environment {
         )
 
         // floor.receiveShadow = true
-        floor.position.y = -10
+        // floor.position.y = -10
         this._simulation.scene.add(floor)
 
         const material = new THREE.ShadowMaterial();
         material.opacity = 0.2;
 
-        const plane = new THREE.Mesh( floorGeo, material );
+        const plane = new THREE.Mesh(floorGeo, material);
         // plane.position.y = -200;
-        plane.position.y = -10
+        // plane.position.y = -10
         plane.receiveShadow = true;
-        this._simulation.scene.add( plane );
-
+        this._simulation.scene.add(plane);
 
         const ground2 = new CANNON.Body({ mass: 0, material: this.groundMaterial });
         ground2.addShape(new CANNON.Plane());
-        ground2.position.y = -10;
+        // ground2.position.y = -10;
         ground2.quaternion.setFromAxisAngle(new CANNON.Vec3(- 1, 0, 0), Math.PI / 2)
         this._simulation.world.addBody(ground2);
-
     }
 
     _terrain() {
@@ -80,24 +78,26 @@ export default class Environment {
     }
 
     _addLighting() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.8)
         this._simulation.scene.add(ambientLight)
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.6)
-        directionalLight.castShadow = true
-        directionalLight.shadow.bias = -0.001
-        directionalLight.shadow.mapSize.set(4096, 4096)
-        directionalLight.shadow.camera.far = 250
-        directionalLight.shadow.camera.near = 50
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
+        // directionalLight.castShadow = true
+        // directionalLight.shadow.bias = -0.001
+        // directionalLight.shadow.radius = 1.5
+        // directionalLight.shadow.mapSize.set(2048, 2048)
+        // directionalLight.shadow.camera.far = 62
+        // directionalLight.shadow.camera.near = 58
 
-        directionalLight.shadow.camera.top = 100
-        directionalLight.shadow.camera.right = 100
-        directionalLight.shadow.camera.bottom = -100
-        directionalLight.shadow.camera.left = -100
+        // directionalLight.shadow.camera.top = 5
+        // directionalLight.shadow.camera.right = 5
+        // directionalLight.shadow.camera.bottom = -5
+        // directionalLight.shadow.camera.left = -5
 
-        directionalLight.position.set(40, 100, 80)
-        this._simulation.scene.add(directionalLight)
-        // const helper = new THREE.DirectionalLightHelper( directionalLight, 5 );
+        directionalLight.position.set(10, 15, 20)
+        // this._simulation.scene.add(directionalLight)
+
+        // const helper = new THREE.DirectionalLightHelper( directionalLight, 1 );
         // this._simulation.scene.add( helper );
         // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
         // this._simulation.scene.add(directionalLightCameraHelper)

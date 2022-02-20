@@ -6,29 +6,29 @@ import { MeshStandardMaterial } from 'three';
 export default class F1Car {
     _vehicle = null;
 
+    _scale = 0.25;
+    _carSize = [2 * this._scale, 0.5 * this._scale, 5.3 * this._scale]
+
     _options = {
-        radius: 1,
+        radius: 1 * this._scale,
         directionLocal: new CANNON.Vec3(0, -1, 0),
         suspensionStiffness: 30,
         suspensionRestLength: 0.2,
         frictionSlip: 5,
         dampingRelaxation: 2.3,
         dampingCompression: 4.4,
-        maxSuspensionForce: 1000,
+        maxSuspensionForce: 1000 * this._scale,
         rollInfluence: 0.01,
         axleLocal: new CANNON.Vec3(-1, 0, 0),
-        chassisConnectionPointLocal: new CANNON.Vec3(1, 1, 0),
+        chassisConnectionPointLocal: new CANNON.Vec3(1 * this._scale, 1 * this._scale, 0),
         maxSuspensionTravel: 0.2,
         customSlidingRotationalSpeed: 30,
         useCustomSlidingRotationalSpeed: true,
     }
 
-    _scale = 0.25;
-    _carSize = [2 * this._scale, 0.5 * this._scale, 5.3 * this._scale]
-
     constructor(world, scene) {
         this._simulation = new Simulator();
-        this._showHelper = true;
+        this._showHelper = false;
         this._car = this._simulation.resources.car;
         this.tyreRear = this._simulation.resources.tyreRear;
         this.tyreFront = this._simulation.resources.tyreFront;
@@ -53,6 +53,32 @@ export default class F1Car {
         }
 
         this._simulation._camera._controls.target = this._car.position;
+
+        this._createLocalLight();
+    }
+
+    _createLocalLight() {
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
+        directionalLight.castShadow = true
+        // directionalLight.shadow.bias = -0.001
+        // directionalLight.shadow.radius = 1.5
+        directionalLight.shadow.mapSize.set(2048, 2048)
+        directionalLight.shadow.camera.far = 80
+        // directionalLight.shadow.camera.near = 1
+
+        // directionalLight.shadow.camera.top = 5
+        // directionalLight.shadow.camera.right = 5
+        // directionalLight.shadow.camera.bottom = -5
+        // directionalLight.shadow.camera.left = -5
+
+        this._car.add(directionalLight)
+        // directionalLight.position.set(20, 35, 20)
+        directionalLight.position.set(0, 20, 0)
+        const helper = new THREE.DirectionalLightHelper( directionalLight, 1 );
+        // this._car.add(helper);
+        this.light = directionalLight;
+        const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
+        // this._car.add(directionalLightCameraHelper)
     }
 
     _createCamera() {
@@ -107,14 +133,14 @@ export default class F1Car {
             })
         )
         plane.rotation.x = -Math.PI / 2
-        plane.position.y = -0.24 // vertical
+        plane.position.y = -0.24 * this._scale // vertical
         // plane.position.z = -0.2
         // this._simulation._debug.gui.add(plane.position, 'x', 0, Math.PI, 0.02);
         // this._simulation._debug.gui.add(plane.position, 'y', -0.5, 1.5, 0.05);
         // this._simulation._debug.gui.add(plane.position, 'z', -2, 2, 0.05);
         // plane.scale.set(new THREE.Vector3(2.0, 2.0, 2.0))
         this._shadowPlane.add(plane)
-        this._car.add(this._shadowPlane)
+        // this._car.add(this._shadowPlane)
     }
 
     _createTyreShadow() {
@@ -209,7 +235,7 @@ export default class F1Car {
 
     _createChassis() {
         var chassisShape = new CANNON.Box(new CANNON.Vec3(this._carSize[0] / 2, this._carSize[1] / 2, this._carSize[2] / 2));
-        var chassisBody = new CANNON.Body({ mass: 790 });
+        var chassisBody = new CANNON.Body({ mass: 790 * this._scale });
         chassisBody.addShape(chassisShape);
         chassisBody.position.set(0, 0.2, 0);
         chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
@@ -291,7 +317,7 @@ export default class F1Car {
      * Ease Steering
      */
     _isSteering = 0;
-    _maxSteerVal = 0.25;
+    _maxSteerVal = 0.15;
     _steeringInterpolation(t) {
         const easeSine = t => Math.sin((t * Math.PI) / 2);
         t = easeSine(t);
@@ -318,8 +344,8 @@ export default class F1Car {
     _keyLoop() {
         requestAnimationFrame(() => this._setHUD())
 
-        const engineForce = 2000;
-        const brakeForce = 200;
+        const engineForce = 350;
+        const brakeForce = 50;
 
         this._setBrakeLight(false)
         this._vehicle.setBrake(0, 0);
@@ -391,5 +417,6 @@ export default class F1Car {
 
         this._car.position.copy(this._chassisBody.position);
         this._car.quaternion.copy(this._chassisBody.quaternion);
+        this.light.lookAt(this._car.position)
     }
 }

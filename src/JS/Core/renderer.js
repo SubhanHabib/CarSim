@@ -17,7 +17,7 @@ export default class Renderer {
             alpha: true,
             antialias: true
         });
-        this._renderer.shadowMap.enabled = false;
+        this._renderer.shadowMap.enabled = true;
         this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this._renderer.setSize(this._simulation._sizes.width, this._simulation._sizes.height);
         this._renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));

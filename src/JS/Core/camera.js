@@ -12,7 +12,7 @@ export default class Camera {
         this._simulation = new Simulator();
         this._initSceneCamera();
 
-        window.addEventListener('keydown', (e) => {
+        window.addEventListener('keydown', e => {
             if (e.key === 'c') this._toggleCamera();
         })
     }
@@ -24,18 +24,9 @@ export default class Camera {
 
     _initSceneCamera() {
         const camera = new THREE.PerspectiveCamera(40, this._simulation._sizes.width / this._simulation._sizes.height, 0.1, 1000);
-        // const camera = new THREE.OrthographicCamera(- 10, 10, 10, - 10, 0.001, 10000)
-        // this._camera.position.set(-30, 30, 30);
-        camera.position.set(-5, -1, -20);
+        camera.position.set(4, 4, -10);
         this._simulation.scene.add(camera);
-
-        // Controls
-        // this._controls = new THREE.FlyControls(camera, this._simulation.canvas)
-        
-        // this._controls.movementSpeed = 100;
-        // this._controls.rollSpeed = 0.5;
-        // this._controls.autoForward = false;
-        // this._controls.dragToLook = true;
+    
         this._controls = new OrbitControls(camera, this._simulation.canvas);
         this._controls.enableDamping = true;
         this._controls.zoomSpeed = 0.5;

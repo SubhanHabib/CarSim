@@ -41,6 +41,7 @@ export default class Resources {
                     gltf.scene.children[0].position.add(offset)
                     // gltf.scene.children[0].scale.set(scale)
                     // gltf.scene.children[0].receiveShadow = true
+                    gltf.scene.children[0].castShadow = true
                     obj.add(gltf.scene.children[0])
                     // obj.scale.set(.001*gltf.scene.scale.x, .001*gltf.scene.scale.y, .001 * gltf.scene.scale.z)
                 }
