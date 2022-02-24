@@ -1,6 +1,4 @@
-import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import * as THREE from 'three';
 
 import Debug from "./Util/debug";
 import Camera from "./Core/camera";
@@ -34,29 +32,26 @@ export default class Simulator {
         this._debug = new Debug();
         this._renderer = new Renderer();
         this._physics = new Physics();
-
         this._environment = new Environment();
         
         this._resources = new Resources({
             onLoad: collection => {
-                console.log('collection', collection)
                 this.scene.add(collection.car)
                 this._physics.createCar()
             }
         });
 
         this._tick();
-
         window.addEventListener('resize', () => this._resize());
     }
 
-    get keys()      { return this._keyHandler._keys;        }
-    get canvas()    { return this._canvas;                  }
-    get camera()    { return this._camera._cameras[this._camera._activeCamera];          }
-    get scene()     { return this._scene;                   }
-    get sizes()     { return this._sizes;                   }
-    get world()     { return this._physics.world;           }
-    get resources() { return this._resources._collection;    }
+    get keys()      { return this._keyHandler._keys;                            }
+    get canvas()    { return this._canvas;                                      }
+    get camera()    { return this._camera._cameras[this._camera._activeCamera]; }
+    get scene()     { return this._scene;                                       }
+    get sizes()     { return this._sizes;                                       }
+    get world()     { return this._physics.world;                               }
+    get resources() { return this._resources._collection;                       }
 
     _resize() {
         this._sizes.width = window.innerWidth;

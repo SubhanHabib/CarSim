@@ -1,11 +1,9 @@
-
-
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
 import Simulator from '../simulator';
-import F1Car from '../World/Objects/car';
 import Mapper from './mapper';
+import F1Car from '../World/Objects/car-f1';
 
 export default class Physics {
     constructor() {

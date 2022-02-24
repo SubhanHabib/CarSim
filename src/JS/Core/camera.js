@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 
 import Simulator from "../simulator";
 

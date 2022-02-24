@@ -3,30 +3,10 @@ import * as CANNON from 'cannon-es';
 import Simulator from '../../simulator';
 import { MeshStandardMaterial } from 'three';
 
-export default class F1Car {
+export default class Car {
     _vehicle = null;
 
-    _scale = 0.25;
-    _carSize = [2 * this._scale, 0.5 * this._scale, 5.3 * this._scale]
-
-    _options = {
-        radius: 1 * this._scale,
-        directionLocal: new CANNON.Vec3(0, -1, 0),
-        suspensionStiffness: 30,
-        suspensionRestLength: 0.2,
-        frictionSlip: 5,
-        dampingRelaxation: 2.3,
-        dampingCompression: 4.4,
-        maxSuspensionForce: 1000 * this._scale,
-        rollInfluence: 0.01,
-        axleLocal: new CANNON.Vec3(-1, 0, 0),
-        chassisConnectionPointLocal: new CANNON.Vec3(1 * this._scale, 1 * this._scale, 0),
-        maxSuspensionTravel: 0.2,
-        customSlidingRotationalSpeed: 30,
-        useCustomSlidingRotationalSpeed: true,
-    }
-
-    constructor(world, scene) {
+    constructor({world, scene, wheelOptions, carOptions}) {
         this._simulation = new Simulator();
         this._showHelper = false;
         this._car = this._simulation.resources.car;
@@ -34,10 +14,10 @@ export default class F1Car {
         this.tyreFront = this._simulation.resources.tyreFront;
         this._world = world;
         this._scene = scene;
+        this._wheelOptions = wheelOptions;
+        this._carOptions = carOptions;
 
         this._createCamera();
-        this._createChassisShadowTexture();
-
         this._createChassis();
         this._createVehicle();
         this._createSteerimgWheel();
@@ -112,72 +92,64 @@ export default class F1Car {
         // this._simulation._debug.gui.add(camera.rotation, 'z', 0, Math.PI, 0.02);
     }
 
-    _createSteerimgWheel() {
-        this._steeringWheel = this._simulation.resources.steeringWheel
-        this._steeringWheel.position.set(0, 0.25, 0.41)
-        this._car.add(this._steeringWheel)
+    _createSteerimgWheel() { throw new Error('Steering wheel not implemented!') }
 
-        // this._simulation._debug.gui.add(this._steeringWheel.position, 'x', 0, 1, 0.01);
-        // this._simulation._debug.gui.add(this._steeringWheel.position, 'y', 0, 1, 0.01);
-        // this._simulation._debug.gui.add(this._steeringWheel.position, 'z', -1, 1, 0.01);
-    }
+    // _createChassisShadowTexture() {
+    //     this.textureLoader = new THREE.TextureLoader()
+    //     const texture = this.textureLoader.load('textures/Car Shadow.png')
+    //     this._shadowPlane = new THREE.Group();
 
-    _createChassisShadowTexture() {
-        this.textureLoader = new THREE.TextureLoader()
-        const texture = this.textureLoader.load('textures/Car Shadow.png')
-        this._shadowPlane = new THREE.Group();
+    //     const scale = 1;
+    //     const plane = new THREE.Mesh(
+    //         new THREE.PlaneGeometry(9 * scale, 9 * scale),
+    //         new THREE.MeshBasicMaterial({
+    //             color: 0x000000,
+    //             transparent: true,
+    //             alphaMap: texture,
+    //             opacity: 0.3
+    //         })
+    //     )
+    //     plane.rotation.x = -Math.PI / 2
+    //     plane.position.y = -0.24 * this._carOptions.scale // vertical
+    //     // plane.position.z = -0.2
+    //     // this._simulation._debug.gui.add(plane.position, 'x', 0, Math.PI, 0.02);
+    //     // this._simulation._debug.gui.add(plane.position, 'y', -0.5, 1.5, 0.05);
+    //     // this._simulation._debug.gui.add(plane.position, 'z', -2, 2, 0.05);
+    //     // plane.scale.set(new THREE.Vector3(2.0, 2.0, 2.0))
+    //     this._shadowPlane.add(plane)
+    //     // this._car.add(this._shadowPlane)
+    // }
 
-        const scale = 1;
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(9 * scale, 9 * scale),
-            new THREE.MeshBasicMaterial({
-                color: 0x000000,
-                transparent: true,
-                alphaMap: texture,
-                opacity: 0.3
-            })
-        )
-        plane.rotation.x = -Math.PI / 2
-        plane.position.y = -0.24 * this._scale // vertical
-        // plane.position.z = -0.2
-        // this._simulation._debug.gui.add(plane.position, 'x', 0, Math.PI, 0.02);
-        // this._simulation._debug.gui.add(plane.position, 'y', -0.5, 1.5, 0.05);
-        // this._simulation._debug.gui.add(plane.position, 'z', -2, 2, 0.05);
-        // plane.scale.set(new THREE.Vector3(2.0, 2.0, 2.0))
-        this._shadowPlane.add(plane)
-        // this._car.add(this._shadowPlane)
-    }
+    // _createTyreShadow() {
+    //     if (!this.tyreShadows) this.tyreShadows = []
+    //     if (!this.tyreTexture) this.tyreTexture = this.textureLoader.load('textures/Car Tyre Shadow.png')
+    //     if (!this.tyreMaterial) this.tyreMaterial = new THREE.MeshBasicMaterial({
+    //         color: 0x000000,
+    //         transparent: true,
+    //         alphaMap: this.tyreTexture,
+    //         alphaTest: 0.1,
+    //         opacity: 0.2,
+    //         blending: THREE.CustomBlending,
+    //         blendSrc: THREE.OneFactor
+    //     })
 
-    _createTyreShadow() {
-        if (!this.tyreShadows) this.tyreShadows = []
-        if (!this.tyreTexture) this.tyreTexture = this.textureLoader.load('textures/Car Tyre Shadow.png')
-        if (!this.tyreMaterial) this.tyreMaterial = new THREE.MeshBasicMaterial({
-            color: 0x000000,
-            transparent: true,
-            alphaMap: this.tyreTexture,
-            alphaTest: 0.1,
-            opacity: 0.2,
-            blending: THREE.CustomBlending,
-            blendSrc: THREE.OneFactor
-        })
-
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(1.4, 1.4),
-            this.tyreMaterial,
-        )
-        plane.rotation.x = -Math.PI / 2;
-        plane.position.y = -0.34;
-        const shadow = new THREE.Group();
-        shadow.add(plane);
-        this.tyreShadows.push(shadow)
-        // this._scene.add(shadow)
+    //     const plane = new THREE.Mesh(
+    //         new THREE.PlaneGeometry(1.4, 1.4),
+    //         this.tyreMaterial,
+    //     )
+    //     plane.rotation.x = -Math.PI / 2;
+    //     plane.position.y = -0.34;
+    //     const shadow = new THREE.Group();
+    //     shadow.add(plane);
+    //     this.tyreShadows.push(shadow)
+    //     // this._scene.add(shadow)
         
-        // this._simulation._debug.gui.add(plane.position, 'y', -2, 2, 0.05).name('tyre y');
-        // this._simulation._debug.gui.add(plane.quaternion, 'x', -2, 2, 0.01).name('TyreRotation y');
-        // this._simulation._debug.gui.add(plane.quaternion, 'y', -2, 2, 0.01).name('TyreRotation y');
-        // this._simulation._debug.gui.add(plane.quaternion, 'z', -2, 2, 0.01).name('TyreRotation y');
-        // this._simulation._debug.gui.add(plane.quaternion, 'w', -2, 2, 0.01).name('TyreRotation y');
-    }
+    //     // this._simulation._debug.gui.add(plane.position, 'y', -2, 2, 0.05).name('tyre y');
+    //     // this._simulation._debug.gui.add(plane.quaternion, 'x', -2, 2, 0.01).name('TyreRotation y');
+    //     // this._simulation._debug.gui.add(plane.quaternion, 'y', -2, 2, 0.01).name('TyreRotation y');
+    //     // this._simulation._debug.gui.add(plane.quaternion, 'z', -2, 2, 0.01).name('TyreRotation y');
+    //     // this._simulation._debug.gui.add(plane.quaternion, 'w', -2, 2, 0.01).name('TyreRotation y');
+    // }
 
     reset() {
         this._chassisBody.position.set(0, 0.2, 0);
@@ -239,8 +211,8 @@ export default class F1Car {
     }
 
     _createChassis() {
-        var chassisShape = new CANNON.Box(new CANNON.Vec3(this._carSize[0] / 2, this._carSize[1] / 2, this._carSize[2] / 2));
-        var chassisBody = new CANNON.Body({ mass: 790 * this._scale });
+        var chassisShape = new CANNON.Box(new CANNON.Vec3(this._carOptions.size[0] / 2, this._carOptions.size[1] / 2, this._carOptions.size[2] / 2));
+        var chassisBody = new CANNON.Body({ mass: this._carOptions.mass });
         chassisBody.addShape(chassisShape);
         chassisBody.position.set(0, 0.2, 0);
         chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
@@ -257,51 +229,39 @@ export default class F1Car {
     }
 
     _createWheels() {
-        var axlewidth = 3 / 4 * this._scale;
-        const frontAxelOffset = 1.6 * this._scale;
-        const rearAxelOffset = -2 * this._scale;
         [
-            { x: axlewidth, z: frontAxelOffset },
-            { x: -axlewidth, z: frontAxelOffset },
-            { x: axlewidth, z: rearAxelOffset },
-            { x: -axlewidth, z: rearAxelOffset }
+            { x: this._carOptions.axleWidth, z: this._carOptions.frontAxelOffset },
+            { x: -this._carOptions.axleWidth, z: this._carOptions.frontAxelOffset },
+            { x: this._carOptions.axleWidth, z: this._carOptions.rearAxelOffset },
+            { x: -this._carOptions.axleWidth, z: this._carOptions.rearAxelOffset }
         ].forEach(({ x, z }) => {
-            this._options.chassisConnectionPointLocal.set(x, 0.11 * this._scale, z);
-            this._vehicle.addWheel(this._options);
+            this._wheelOptions.chassisConnectionPointLocal.set(x, 0.11 * this._carOptions.scale, z);
+            this._vehicle.addWheel(this._wheelOptions);
         });
         this._vehicle.addToWorld(this._world);
 
-        this._carChassis = new THREE.Mesh(new THREE.BoxGeometry(...this._carSize));
+        this._carChassis = new THREE.Mesh(new THREE.BoxGeometry(...this._carOptions.size));
         if (this._showHelper) this._scene.add(this._carChassis)
 
-        // const wheelFrontGeometry = new THREE.CylinderGeometry(1, 1, 0.305 * 4, 16)
-        // const wheelRearGeometry = new THREE.CylinderGeometry(1, 1, 0.405 * 4, 16)
-        // wheelFrontGeometry.rotateZ(Math.PI / 2);
-        // wheelRearGeometry.rotateZ(Math.PI / 2);
-        // const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x101010 });
-        const createWheel = isRearAxel => {
-            return isRearAxel
-                ? { obj: this.tyreRear.clone(), shadow: this._createTyreShadow() }
-                : { obj: this.tyreFront.clone(), shadow: this._createTyreShadow() };
-            // const mesh = new THREE.Mesh(isRearAxel ? wheelRearGeometry : wheelFrontGeometry, wheelMaterial)
-            // mesh.castShadow = true
-            // return mesh;
-        }
+        const createWheel = isRearAxel =>
+            isRearAxel
+                ? this.tyreRear.clone()
+                : this.tyreFront.clone();
 
         const carWheels = []
         const wheelBodies = [];
         const wheelPhysicsMaterial = new CANNON.Material("wheelMaterial");
         wheelPhysicsMaterial.friction = 0
         this._vehicle.wheelInfos.forEach((wheel, i) => {
-            const shape = new CANNON.Cylinder(wheel.radius * this._scale, wheel.radius * this._scale, wheel.radius * 1.5 * this._scale, 16);
-            const body = new CANNON.Body({ mass: 25 * this._scale, material: wheelPhysicsMaterial });
+            const shape = new CANNON.Cylinder(wheel.radius * this._carOptions.scale, wheel.radius * this._carOptions.scale, wheel.radius * 1.5 * this._carOptions.scale, 16);
+            const body = new CANNON.Body({ mass: this._carOptions.wheelMass, material: wheelPhysicsMaterial });
             const q = new CANNON.Quaternion();
             q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
             body.addShape(shape, new CANNON.Vec3(), q);
             wheelBodies.push(body);
             carWheels.push(createWheel(i >= 2));
         });
-        this._scene.add(...carWheels.map(wheel => wheel.obj));
+        this._scene.add(...carWheels);
 
         // update the wheels to match the physics
         this._world.addEventListener('postStep', () => {
@@ -312,8 +272,8 @@ export default class F1Car {
                 wheelBodies[i].position.copy(t.position);
                 wheelBodies[i].quaternion.copy(t.quaternion);
                 // update wheel visuals
-                carWheels[i].obj.position.copy(t.position);
-                carWheels[i].obj.quaternion.copy(t.quaternion);
+                carWheels[i].position.copy(t.position);
+                carWheels[i].quaternion.copy(t.quaternion);
             }
         });
     }
@@ -322,35 +282,30 @@ export default class F1Car {
      * Ease Steering
      */
     _isSteering = 0;
-    _maxSteerVal = 0.2;
     _steeringInterpolation(t) {
         const easeSine = t => Math.sin((t * Math.PI) / 2);
         t = easeSine(t);
-        return 0 * (1 - t) + this._maxSteerVal * t;
+        return 0 * (1 - t) + this._carOptions.maxSteeringVal * t;
     }
     /**
      * @param {number} direction (-1 = left, 1 = right)
      */
     _getSteeringValue(direction, onUpdate) {
-        const steeringSpeed = 0.5;
         if (direction === undefined) {
             if (this._isSteering < 0)
-                this._isSteering = Math.min(0.0, this._isSteering + 0.1 * steeringSpeed)
+                this._isSteering = Math.min(0.0, this._isSteering + 0.1 * this._carOptions.steeringSpeed)
             else if (this._isSteering > 0)
-                this._isSteering = Math.max(0.0, this._isSteering - 0.1 * steeringSpeed)
+                this._isSteering = Math.max(0.0, this._isSteering - 0.1 * this._carOptions.steeringSpeed)
         } else {
             direction > 0
-                ? this._isSteering = Math.min(1.0, this._isSteering + 0.1 * steeringSpeed)
-                : this._isSteering = Math.max(-1.0, this._isSteering - 0.1 * steeringSpeed)
+                ? this._isSteering = Math.min(1.0, this._isSteering + 0.1 * this._carOptions.steeringSpeed)
+                : this._isSteering = Math.max(-1.0, this._isSteering - 0.1 * this._carOptions.steeringSpeed)
         }
         onUpdate(this._steeringInterpolation(this._isSteering));
     }
 
     _keyLoop() {
         requestAnimationFrame(() => this._setHUD())
-
-        const engineForce = 350;
-        const brakeForce = 50;
 
         this._setBrakeLight(false)
         this._vehicle.setBrake(0, 0);
@@ -361,23 +316,23 @@ export default class F1Car {
         // Braking
         if (this._simulation.keys[' ']) {
             this._setBrakeLight(true)
-            this._vehicle.setBrake(brakeForce, 2);
-            this._vehicle.setBrake(brakeForce, 3);
+            this._vehicle.setBrake(this._carOptions.brakeForce, 2);
+            this._vehicle.setBrake(this._carOptions.brakeForce, 3);
         }
 
         // Acceleration
         if (this._simulation.keys['w'] || this._simulation.keys['ArrowUp']) {
             if (this._vehicle.currentVehicleSpeedKmHour / 1.6 < 200) {
-                this._vehicle.applyEngineForce(-engineForce, 0);
-                this._vehicle.applyEngineForce(-engineForce, 1);
+                this._vehicle.applyEngineForce(-this._carOptions.engineForce, 0);
+                this._vehicle.applyEngineForce(-this._carOptions.engineForce, 1);
             } else {
                 this._vehicle.applyEngineForce(0, 0);
                 this._vehicle.applyEngineForce(0, 1);
             }
         } else if (this._simulation.keys['s'] || this._simulation.keys['ArrowDown']) {
             if (this._vehicle.currentVehicleSpeedKmHour / 1.6 > -40) {
-                this._vehicle.applyEngineForce(engineForce / 2, 0);
-                this._vehicle.applyEngineForce(engineForce / 2, 1);
+                this._vehicle.applyEngineForce(this._carOptions.engineForce / 2, 0);
+                this._vehicle.applyEngineForce(this._carOptions.engineForce / 2, 1);
             } else {
                 this._vehicle.applyEngineForce(0, 0);
                 this._vehicle.applyEngineForce(0, 1);
@@ -422,6 +377,5 @@ export default class F1Car {
 
         this._car.position.copy(this._chassisBody.position);
         this._car.quaternion.copy(this._chassisBody.quaternion);
-        this.light.lookAt(this._car.position)
     }
 }
